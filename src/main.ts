@@ -49,22 +49,40 @@ button.addEventListener("mouseup", () => {
 });
 
 //the counter
-let counter = 0;
+let counterClick = 0;
+let counterFrame = 0;
 const counterDiamond = document.createElement("div");
 
-counterDiamond.innerHTML = `${counter} Diamonds💎`;
+counterDiamond.innerHTML = `${counterClick} 💎`;
 counterDiamond.style.marginTop = "20px";
 counterDiamond.style.fontSize = "1rem";
 
 app.append(counterDiamond);
 
+//the counter: diamond +1 each click
 button.addEventListener("click", () => {
-  counter += 1;
-  counterDiamond.innerHTML = `${counter} Diamonds💎`;
+  counterClick += 1;
+  counterDiamond.innerHTML = `${counterClick} 💎`;
 });
 
-//the counter: diamond +1 each sec
-setInterval(() => {
-  counter += 1;
-  counterDiamond.innerHTML = `${counter} Diamonds💎`;
-}, 1000);
+//the counter: diamond +1 each sec(+ 1/framerate each frame)
+let start: number | undefined;
+
+function step(timestamp: number) {
+  if (start === undefined) {
+    start = timestamp;
+  }
+  const elapsed = timestamp - start;
+  counterFrame = elapsed / 1000;
+  counterDiamond.innerHTML = `${counterFrame.toFixed(2)} 💎`;
+  updateCounterDisplay();
+  requestAnimationFrame(step);
+}
+
+//the counter: counterClick + counterFrame = counterUpdated
+function updateCounterDisplay() {
+  const totalCounter = counterClick + counterFrame;
+  counterDiamond.innerHTML = `${totalCounter.toFixed(2)} 💎`;
+}
+
+requestAnimationFrame(step);
