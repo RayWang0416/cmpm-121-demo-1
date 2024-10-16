@@ -9,6 +9,7 @@ const header = document.createElement("h1");
 header.innerHTML = gameName;
 app.append(header);
 
+//The button
 const button = document.createElement("button_1");
 button.innerHTML = "💎 The Best Button 💎";
 
@@ -21,10 +22,8 @@ button.style.color = "#fff";
 button.style.textShadow = "1px 1px 1px #000";
 button.style.borderRadius = "10px";
 button.style.backgroundColor = "black";
-button.style.backgroundImage =
-  "linear-gradient(to top left, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2) 30%, rgba(0, 0, 0, 0))";
-button.style.boxShadow =
-  "inset 2px 2px 3px rgba(255, 255, 255, 0.6), inset -2px -2px 3px rgba(0, 0, 0, 0.6)";
+button.style.backgroundImage = "linear-gradient(to top left, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2) 30%, rgba(0, 0, 0, 0))";
+button.style.boxShadow = "inset 2px 2px 3px rgba(255, 255, 255, 0.6), inset -2px -2px 3px rgba(0, 0, 0, 0.6)";
 button.style.outline = "none";
 
 app.append(button);
@@ -38,11 +37,25 @@ button.addEventListener("mouseleave", () => {
 });
 
 button.addEventListener("mousedown", () => {
-  button.style.boxShadow =
-    "inset -2px -2px 3px rgba(255, 255, 255, 0.6), inset 2px 2px 3px rgba(0, 0, 0, 0.6)";
+  button.style.boxShadow = "inset -2px -2px 3px rgba(255, 255, 255, 0.6), inset 2px 2px 3px rgba(0, 0, 0, 0.6)";
 });
 
 button.addEventListener("mouseup", () => {
-  button.style.boxShadow =
-    "inset 2px 2px 3px rgba(255, 255, 255, 0.6), inset -2px -2px 3px rgba(0, 0, 0, 0.6)";
+  button.style.boxShadow = "inset 2px 2px 3px rgba(255, 255, 255, 0.6), inset -2px -2px 3px rgba(0, 0, 0, 0.6)";
+});
+
+
+//The counter
+let counter = 0;
+const counterDiamond = document.createElement("div");
+
+counterDiamond.innerHTML = `${counter} Diamonds💎`;
+counterDiamond.style.marginTop = "20px";
+counterDiamond.style.fontSize = "1rem";
+
+app.append(counterDiamond);
+
+button.addEventListener("click", () => {
+  counter += 1;
+  counterDiamond.innerHTML = `${counter} Diamonds💎`;
 });
