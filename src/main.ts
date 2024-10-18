@@ -30,7 +30,7 @@ function styleButton(button: HTMLButtonElement) {
   button.style.outline = "none";
   button.style.borderRadius = "0";
   button.style.display = "block";
-  button.style.marginTop = "20px"; 
+  button.style.marginTop = "20px";
 
   button.addEventListener("mouseenter", () => {
     button.style.backgroundColor = "grey";
