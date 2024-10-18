@@ -9,6 +9,14 @@ const header = document.createElement("h1");
 header.innerHTML = gameName;
 app.append(header);
 
+type Upgrade = {
+  name: string;
+  cost: number;
+  rate: number;
+  count: number;
+  button?: HTMLButtonElement;
+};
+
 //the button style
 function styleButton(button: HTMLButtonElement) {
   button.style.border = "1px solid black";
@@ -33,7 +41,7 @@ function styleButton(button: HTMLButtonElement) {
 //constants and variables for diamond counter
 let counterTotalDiamond = 0;
 let growthRateDiamond = 0;
-const upgradesDiamond = [
+const upgradesDiamond: Upgrade[] = [
   { name: "1", cost: 10, rate: 0.1, count: 0 },
   { name: "2", cost: 100, rate: 2.0, count: 0 },
   { name: "3", cost: 1000, rate: 50.0, count: 0 },
@@ -48,7 +56,7 @@ app.append(button);
 //the upgrade buttons
 upgradesDiamond.forEach((upgrade) => {
   const upgradeButton = document.createElement("button");
-  (upgrade as any).button = upgradeButton;
+  upgrade.button = upgradeButton;
   upgradeButton.innerHTML = `Purchase Upgrade ${upgrade.name} (Cost: ${upgrade.cost} 💎)`;
   upgradeButton.disabled = true;
   styleButton(upgradeButton);
@@ -102,8 +110,8 @@ function step(timestamp: number) {
 function updateCounterDisplay() {
   counterDiamond.innerHTML = `${counterTotalDiamond.toFixed(2)} 💎`;
   upgradesDiamond.forEach((upgrade) => {
-  (upgrade as any).button.disabled = counterTotalDiamond < upgrade.cost;
-});
+    upgrade.button!.disabled = counterTotalDiamond < upgrade.cost;
+  });
 }
 
 function updateStatusDisplay() {
