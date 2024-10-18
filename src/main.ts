@@ -41,6 +41,7 @@ function styleButton(button: HTMLButtonElement) {
 //constants and variables for diamond counter
 let counterTotalDiamond = 0;
 let growthRateDiamond = 0;
+let multiplyerDiamond = 1.15;
 const upgradesDiamond: Upgrade[] = [
   { name: "1", cost: 10, rate: 0.1, count: 0 },
   { name: "2", cost: 100, rate: 2.0, count: 0 },
@@ -65,6 +66,7 @@ upgradesDiamond.forEach((upgrade) => {
   upgradeButton.addEventListener("click", () => {
     if (counterTotalDiamond >= upgrade.cost) {
       counterTotalDiamond -= upgrade.cost;
+      upgrade.cost *= multiplyerDiamond;
       growthRateDiamond += upgrade.rate;
       upgrade.count++;
       updateCounterDisplay();
@@ -115,10 +117,10 @@ function updateCounterDisplay() {
 }
 
 function updateStatusDisplay() {
-  let statusText = `Current Growth Rate: ${growthRateDiamond.toFixed(2)} units/sec<br>`;
   upgradesDiamond.forEach((upgrade) => {
-    statusText += `Upgrade ${upgrade.name}: ${upgrade.count}<br>`;
+    upgrade.button!.innerHTML = `Purchase Upgrade ${upgrade.name} (Cost: ${upgrade.cost.toFixed(2)} Diamonds, Purchased: ${upgrade.count})`;
   });
+  let statusText = `Current Diamond Growth Rate: ${growthRateDiamond.toFixed(2)} units/sec<br>`;
   statusDisplay.innerHTML = statusText;
 }
 
