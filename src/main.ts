@@ -9,106 +9,110 @@ const header = document.createElement("h1");
 header.innerHTML = gameName;
 app.append(header);
 
-//variables for COUNTER
-let counterClick = 0;
-let counterFrame = 0;
-let growthRate = 0;
-
 //the button style
 function styleButton(button: HTMLButtonElement) {
-  button.style.border = "0";
-  button.style.lineHeight = "2";
-  button.style.padding = "20px 40px";
+  button.style.border = "1px solid black";
+  button.style.lineHeight = "1.5";
+  button.style.padding = "5px 10px";
   button.style.fontSize = "1rem";
   button.style.textAlign = "center";
-  button.style.color = "#fff";
-  button.style.textShadow = "1px 1px 1px #000";
-  button.style.borderRadius = "10px";
-  button.style.backgroundColor = "black";
-  button.style.backgroundImage =
-    "linear-gradient(to top left, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2) 30%, rgba(0, 0, 0, 0))";
-  button.style.boxShadow =
-    "inset 2px 2px 3px rgba(255, 255, 255, 0.6), inset -2px -2px 3px rgba(0, 0, 0, 0.6)";
+  button.style.backgroundColor = "white";
+  button.style.color = "black";
   button.style.outline = "none";
+  button.style.borderRadius = "0";
 
   button.addEventListener("mouseenter", () => {
     button.style.backgroundColor = "grey";
   });
 
   button.addEventListener("mouseleave", () => {
-    button.style.backgroundColor = "black";
-  });
-
-  button.addEventListener("mousedown", () => {
-    button.style.boxShadow =
-      "inset -2px -2px 3px rgba(255, 255, 255, 0.6), inset 2px 2px 3px rgba(0, 0, 0, 0.6)";
-  });
-
-  button.addEventListener("mouseup", () => {
-    button.style.boxShadow =
-      "inset 2px 2px 3px rgba(255, 255, 255, 0.6), inset -2px -2px 3px rgba(0, 0, 0, 0.6)";
+    button.style.backgroundColor = "white";
   });
 }
 
+//constants and variables for diamond counter
+let counterTotalDiamond = 0;
+let growthRateDiamond = 0;
+const upgradesDiamond = [
+  { name: "1", cost: 10, rate: 0.1, count: 0 },
+  { name: "2", cost: 100, rate: 2.0, count: 0 },
+  { name: "3", cost: 1000, rate: 50.0, count: 0 },
+];
+
 //the +1 diamond button
 const button = document.createElement("button");
-button.innerHTML = "💎 The Best Button 💎";
+button.innerHTML = "Diamond 💎";
 styleButton(button);
 app.append(button);
 
-//the upgrade button
-const upgradeButton = document.createElement("button");
-upgradeButton.innerHTML = "Purchase Upgrade (Cost: 10 Diamonds)";
-upgradeButton.disabled = true;
-styleButton(upgradeButton);
-app.append(upgradeButton);
+//the upgrade buttons
+upgradesDiamond.forEach((upgrade) => {
+  const upgradeButton = document.createElement("button");
+  (upgrade as any).button = upgradeButton;
+  upgradeButton.innerHTML = `Purchase Upgrade ${upgrade.name} (Cost: ${upgrade.cost} 💎)`;
+  upgradeButton.disabled = true;
+  styleButton(upgradeButton);
+  app.append(upgradeButton);
 
-upgradeButton.addEventListener("click", () => {
-  if (getTotalCounter() >= 10) {
-    counterClick -= 10;
-    growthRate += 1;
-    updateCounterDisplay();
-  }
+  upgradeButton.addEventListener("click", () => {
+    if (counterTotalDiamond >= upgrade.cost) {
+      counterTotalDiamond -= upgrade.cost;
+      growthRateDiamond += upgrade.rate;
+      upgrade.count++;
+      updateCounterDisplay();
+      updateStatusDisplay();
+    }
+  });
 });
 
 //the counter
 const counterDiamond = document.createElement("div");
-
-counterDiamond.innerHTML = `${counterClick} 💎`;
+counterDiamond.innerHTML = `${counterTotalDiamond} 💎`;
 counterDiamond.style.marginTop = "20px";
 counterDiamond.style.fontSize = "1rem";
 
 app.append(counterDiamond);
 
+// Status display
+const statusDisplay = document.createElement("div");
+statusDisplay.style.marginTop = "20px";
+statusDisplay.style.fontSize = "1rem";
+app.append(statusDisplay);
+
 //button click to increment counterClick
 button.addEventListener("click", () => {
-  counterClick += 1;
+  counterTotalDiamond += 1;
   updateCounterDisplay();
 });
 
 //continuous growth using requestAnimationFrame
 let lastTimestamp: number | undefined;
-
 function step(timestamp: number) {
   if (lastTimestamp === undefined) {
     lastTimestamp = timestamp;
   }
   const elapsed = timestamp - lastTimestamp;
   lastTimestamp = timestamp;
-  counterFrame += (elapsed / 1000) * growthRate;
+  counterTotalDiamond += (elapsed / 1000) * growthRateDiamond;
   updateCounterDisplay();
   requestAnimationFrame(step);
 }
 
 //update the displayed counter
 function updateCounterDisplay() {
-  const totalCounter = getTotalCounter();
-  counterDiamond.innerHTML = `${totalCounter.toFixed(2)} 💎`;
-  upgradeButton.disabled = totalCounter < 10;
+  counterDiamond.innerHTML = `${counterTotalDiamond.toFixed(2)} 💎`;
+  upgradesDiamond.forEach((upgrade) => {
+  (upgrade as any).button.disabled = counterTotalDiamond < upgrade.cost;
+});
 }
 
-function getTotalCounter() {
-  return counterClick + counterFrame;
+function updateStatusDisplay() {
+  let statusText = `Current Growth Rate: ${growthRateDiamond.toFixed(2)} units/sec<br>`;
+  upgradesDiamond.forEach((upgrade) => {
+    statusText += `Upgrade ${upgrade.name}: ${upgrade.count}<br>`;
+  });
+  statusDisplay.innerHTML = statusText;
 }
 
 requestAnimationFrame(step);
+updateStatusDisplay();
