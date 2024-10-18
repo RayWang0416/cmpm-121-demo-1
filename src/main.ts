@@ -2,12 +2,12 @@ import "./style.css";
 
 const app: HTMLDivElement = document.querySelector("#app")!;
 
-const gameName = "The Most Boring Game";
+const gameName = "⛏️ World of Mine ⛏️";
 document.title = gameName;
 
 const header = document.createElement("h1");
 header.innerHTML = gameName;
-app.append(header);
+app.prepend(header);
 
 type Upgrade = {
   name: string;
@@ -19,15 +19,18 @@ type Upgrade = {
 
 //the button style
 function styleButton(button: HTMLButtonElement) {
+  button.style.width = "500px";
+  button.style.height = "50px";
   button.style.border = "1px solid black";
   button.style.lineHeight = "1.5";
-  button.style.padding = "5px 10px";
   button.style.fontSize = "1rem";
   button.style.textAlign = "center";
   button.style.backgroundColor = "white";
   button.style.color = "black";
   button.style.outline = "none";
   button.style.borderRadius = "0";
+  button.style.display = "block";
+  button.style.marginTop = "20px"; 
 
   button.addEventListener("mouseenter", () => {
     button.style.backgroundColor = "grey";
@@ -43,14 +46,14 @@ let counterTotalDiamond = 0;
 let growthRateDiamond = 0;
 const multiplyerDiamond = 1.15;
 const upgradesDiamond: Upgrade[] = [
-  { name: "1", cost: 10, rate: 0.1, count: 0 },
-  { name: "2", cost: 100, rate: 2.0, count: 0 },
-  { name: "3", cost: 1000, rate: 50.0, count: 0 },
+  { name: "Pickaxe", cost: 10, rate: 0.1, count: 0 },
+  { name: "Driller", cost: 100, rate: 2.0, count: 0 },
+  { name: "Shield Tunneling Machine", cost: 1000, rate: 50.0, count: 0 },
 ];
 
 //the +1 diamond button
 const button = document.createElement("button");
-button.innerHTML = "Diamond 💎";
+button.innerHTML = "💎";
 styleButton(button);
 app.append(button);
 
@@ -58,7 +61,7 @@ app.append(button);
 upgradesDiamond.forEach((upgrade) => {
   const upgradeButton = document.createElement("button");
   upgrade.button = upgradeButton;
-  upgradeButton.innerHTML = `Purchase Upgrade ${upgrade.name} (Cost: ${upgrade.cost} 💎)`;
+  upgradeButton.innerHTML = `${upgrade.name} (Cost: ${upgrade.cost} 💎)`;
   upgradeButton.disabled = true;
   styleButton(upgradeButton);
   app.append(upgradeButton);
@@ -118,9 +121,9 @@ function updateCounterDisplay() {
 
 function updateStatusDisplay() {
   upgradesDiamond.forEach((upgrade) => {
-    upgrade.button!.innerHTML = `Purchase Upgrade ${upgrade.name} (Cost: ${upgrade.cost.toFixed(2)} Diamonds, Purchased: ${upgrade.count})`;
+    upgrade.button!.innerHTML = `${upgrade.name} (Cost: ${upgrade.cost.toFixed(2)} 💎, Purchased: ${upgrade.count})`;
   });
-  const statusText = `Current Diamond Growth Rate: ${growthRateDiamond.toFixed(2)} units/sec<br>`;
+  const statusText = `Current Diamond Efficiency: ${growthRateDiamond.toFixed(2)} units/sec<br>`;
   statusDisplay.innerHTML = statusText;
 }
 
