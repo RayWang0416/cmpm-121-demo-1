@@ -78,7 +78,7 @@ upgradesDiamond.forEach((upgrade) => {
   });
 });
 
-//the counter
+//the diamond counter
 const counterDiamond = document.createElement("div");
 counterDiamond.innerHTML = `${counterTotalDiamond} 💎`;
 counterDiamond.style.marginTop = "20px";
