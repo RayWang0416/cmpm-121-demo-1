@@ -9,6 +9,17 @@ const header = document.createElement("h1");
 header.innerHTML = GAME_NAME;
 app.prepend(header);
 
+
+//A gradual changing background color, inspired by https://scso-ucsc.github.io/Incremental-Game-Development/
+const colors = ["#ff9a9e", "#fad0c4", "#fbc2eb", "#a1c4fd"];
+let currentIndex = 0;
+function changeBackgroundColor() {
+  app.style.backgroundColor = colors[currentIndex];
+  currentIndex = (currentIndex + 1) % colors.length;
+}
+setInterval(changeBackgroundColor, 2500);
+app.style.transition = "background-color 2.5s ease";
+
 type ResourceUpgrade = {
   name: string;
   cost: number;
@@ -62,14 +73,36 @@ const resourceData: { [key: string]: Resource } = {
   }
 };
 
-function applyStyleToButton(button: HTMLButtonElement) {
+//RGB color (inspired by ishachury20, https://ishachury20.github.io/cmpm-121-demo-1/)
+function getColorByResource(resourceName: string, index: number): string {
+  let color;
+  switch (resourceName) {
+    case "diamond":
+      color = `rgb(173, 216, 230)`; // Light blue
+      break;
+    case "iron":
+      color = `rgb(255, 255, 255)`; // White
+      break;
+    case "gold":
+      color = `rgb(255, 223, 0)`; // Yellow
+      break;
+    default:
+      color = `rgb(255, 255, 255)`;
+  }
+  
+  const brightnessFactor = Math.max(0.8 - index * 0.1, 0.5);
+  const rgb = color.match(/\d+/g)?.map(Number).map(val => Math.round(val * brightnessFactor)) || [255, 255, 255];
+  return `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
+}
+
+function applyStyleToButton(button: HTMLButtonElement, resourceName: string, index: number) {
   button.style.width = "500px";
   button.style.height = "70px";
   button.style.border = "1px solid black";
   button.style.lineHeight = "1.5";
   button.style.fontSize = "1rem";
   button.style.textAlign = "center";
-  button.style.backgroundColor = "white";
+  button.style.backgroundColor = getColorByResource(resourceName, index);
   button.style.color = "black";
   button.style.outline = "none";
   button.style.borderRadius = "0";
@@ -81,14 +114,14 @@ function applyStyleToButton(button: HTMLButtonElement) {
   });
 
   button.addEventListener("mouseleave", () => {
-    button.style.backgroundColor = "white";
+    button.style.backgroundColor = getColorByResource(resourceName, index);
   });
 }
 
-function createResourceButtons(resource: Resource) {
+function createResourceButtons(resource: Resource, resourceName: string) {
   const resourceButton = document.createElement("button");
   resourceButton.innerHTML = resource.icon;
-  applyStyleToButton(resourceButton);
+  applyStyleToButton(resourceButton, resourceName, 0);
   app.append(resourceButton);
 
   resourceButton.addEventListener("click", () => {
@@ -96,12 +129,12 @@ function createResourceButtons(resource: Resource) {
     updateResourceDisplays();
   });
 
-  resource.upgrades.forEach((upgrade) => {
+  resource.upgrades.forEach((upgrade, index) => {
     const upgradeButton = document.createElement("button");
     upgrade.buttonElement = upgradeButton;
     upgradeButton.innerHTML = `${upgrade.name} (Cost: ${upgrade.cost} ${resource.icon})`;
     upgradeButton.disabled = true;
-    applyStyleToButton(upgradeButton);
+    applyStyleToButton(upgradeButton, resourceName, index + 1);
     app.append(upgradeButton);
 
     upgradeButton.addEventListener("click", () => {
@@ -153,9 +186,8 @@ function gameLoopStep(timestamp: number) {
   requestAnimationFrame(gameLoopStep);
 }
 
-// Create buttons for each resource
-Object.values(resourceData).forEach((resource) => {
-  createResourceButtons(resource);
+Object.entries(resourceData).forEach(([resourceName, resource]) => {
+  createResourceButtons(resource, resourceName);
 });
 
 requestAnimationFrame(gameLoopStep);
